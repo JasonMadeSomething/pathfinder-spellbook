@@ -14,33 +14,10 @@ client.on('message', msg => {
   //need to validate the url
   const siteUrl = msg.content;
   
-  axios.get(siteUrl).then((response) => { const replyData = parseFeatPage(response.data);
-    for (var key in replyData){
-      if(replyData.hasOwnProperty(key)) {
-        if (replyData[key].startsWith("Prerequisite")
-        || replyData[key].startsWith("Benefit")
-        || replyData[key].startsWith("Special")
-        || replyData[key].startsWith("Normal")
-        ){
-          replyData[key] = "**" + replyData[key];
-          if (replyData[key].startsWith("Prerequisite")){
-              replyData[key].replace("**Prerequisite(s):", "**Prerequisite(s)**:");
-          } else if (replyData[key].startsWith("Benefit")){
-              replyData[key].replace("**Benefit:", "**Benefit**:");
-          } else if (replyData[key].startsWith("Special")){
-              replyData[key].replace("**Special:", "**Special**:");
-          } else if (replyData[key].startsWith("Normal")){
-              replyData[key].replace("**Normal:", "**Normal**:");
-          }
-        } else if (key == "Name") {
-          replyData[key] = "**" + replyData[key] + "**";
-        } else {
-          replyData[key] = "_" + replyData[key] + "_";
-        }
-        
-      }
-      
-    }
+axios.get(siteUrl).then((response) => { const replyData = parseFeatPage(response.data);
+    const formattedData = formatFeatData(replyData);
+    
+    console.log(formattedData);
   });
 
 function parseFeatPage(data){
@@ -52,7 +29,37 @@ function parseFeatPage(data){
   details.each(function(i){
     reply["line"+i] = $(this).text();
   });
-  return (reply);
+  return reply;
+}
+
+
+function formatFeatData(replyData){
+  for (var key in replyData){
+      if(replyData.hasOwnProperty(key)) {
+        if (replyData[key].startsWith("Prerequisite")
+        || replyData[key].startsWith("Benefit")
+        || replyData[key].startsWith("Special")
+        || replyData[key].startsWith("Normal")
+        ){
+          replyData[key] = "**" + replyData[key];
+          if (replyData[key].startsWith("**Prerequisite")){
+              replyData[key] = replyData[key].replace("**Prerequisite(s):", "**Prerequisite(s)**:");
+          } else if (replyData[key].startsWith("**Benefit")){
+              replyData[key] = replyData[key].replace("**Benefit:", "**Benefit**:");
+          } else if (replyData[key].startsWith("**Special")){
+              replyData[key] = replyData[key].replace("**Special:", "**Special**:");
+          } else if (replyData[key].startsWith("**Normal")){
+              replyData[key] = replyData[key].replace("**Normal:", "**Normal**:");
+          }
+        } else if (key == "Name") {
+          replyData[key] = "**" + replyData[key] + "**";
+        } else {
+          replyData[key] = "_" + replyData[key] + "_";
+        }
+      }
+    }
+    
+    return replyData;
 }
 
 
