@@ -1,4 +1,4 @@
-The goal of this bot is to parse URLs from the pathfinder SRD and return them to discord chat as readable text.
+The goal of this bot is to parse URLs from the pathfinder d20pfsrd and return them to discord chat as readable text. Am willing to consider adding AoN support later
 
 The initial focus will be on feats:
 

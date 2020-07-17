@@ -13,12 +13,17 @@ client.on('message', msg => {
   
   //need to validate the url
   const siteUrl = msg.content;
-  
-axios.get(siteUrl).then((response) => { const replyData = parseFeatPage(response.data);
+  if (siteUrl.startsWith("https://www.d20pfsrd.com/feats/")){
+    axios.get(siteUrl).then((response) => { const replyData = parseFeatPage(response.data);
     const formattedData = formatFeatData(replyData);
-    
-    console.log(formattedData);
-  });
+    const message = formatMessage(formattedData);
+    msg.channel.send(message);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
 
 function parseFeatPage(data){
 
@@ -43,7 +48,11 @@ function formatFeatData(replyData){
         ){
           replyData[key] = "**" + replyData[key];
           if (replyData[key].startsWith("**Prerequisite")){
-              replyData[key] = replyData[key].replace("**Prerequisite(s):", "**Prerequisite(s)**:");
+              if (replyData[key].startsWith("**Prerequisite(s):")) {
+                replyData[key] = replyData[key].replace("**Prerequisite(s):", "**Prerequisite(s)**:");
+              } else {
+                replyData[key] = replyData[key].replace("**Prerequisite:", "**Prerequisite**:");
+              }
           } else if (replyData[key].startsWith("**Benefit")){
               replyData[key] = replyData[key].replace("**Benefit:", "**Benefit**:");
           } else if (replyData[key].startsWith("**Special")){
@@ -62,6 +71,16 @@ function formatFeatData(replyData){
     return replyData;
 }
 
+
+function formatMessage(formattedData){
+  var message = formattedData["Name"] + "\n";
+  for (var key in formattedData){
+    if (key != "Name"){
+      message = message + formattedData[key] + "\n";
+    }
+  }
+  return message;
+}
 
 });
 

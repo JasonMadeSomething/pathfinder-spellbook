@@ -7,13 +7,15 @@ const cheerio = require('cheerio');
 
   
 //need to validate the url
-const siteUrl = "https://www.d20pfsrd.com/feats/combat-feats/armored-athlete-combat";
+const siteUrl = "https://www.d20pfsrd.com/feats/combat-feats/improved-grapple-combat/";
   
   
 axios.get(siteUrl).then((response) => { const replyData = parseFeatPage(response.data);
     const formattedData = formatFeatData(replyData);
     
-    console.log(formattedData);
+    const message = formatMessage(formattedData);
+    
+    console.log(message);
   });
 
 function parseFeatPage(data){
@@ -39,7 +41,11 @@ function formatFeatData(replyData){
         ){
           replyData[key] = "**" + replyData[key];
           if (replyData[key].startsWith("**Prerequisite")){
-              replyData[key] = replyData[key].replace("**Prerequisite(s):", "**Prerequisite(s)**:");
+              if (replyData[key].startsWith("**Prerequisite(s):")) {
+                replyData[key] = replyData[key].replace("**Prerequisite(s):", "**Prerequisite(s)**:");
+              } else {
+                replyData[key] = replyData[key].replace("**Prerequisite:", "**Prerequisite**:");
+              }
           } else if (replyData[key].startsWith("**Benefit")){
               replyData[key] = replyData[key].replace("**Benefit:", "**Benefit**:");
           } else if (replyData[key].startsWith("**Special")){
@@ -56,4 +62,14 @@ function formatFeatData(replyData){
     }
     
     return replyData;
+}
+
+function formatMessage(formattedData){
+  var message = formattedData["Name"] + "\n";
+  for (var key in formattedData){
+    if (key != "Name"){
+      message = message + formattedData[key] + "\n";
+    }
+  }
+  return message;
 }
