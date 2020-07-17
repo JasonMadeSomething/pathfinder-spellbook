@@ -17,12 +17,11 @@ client.on('message', msg => {
   axios.get(siteUrl).then((response) => { getHeader(response.data)
   })
 
-  
-});
+  function getHeader(data){
 
-function getHeader(data){
-  const cheerio = require('cheerio');
   const $ = cheerio.load(data);
   const pagetitle = $('article > h1').text();
   console.log(pagetitle);
 }
+});
+
