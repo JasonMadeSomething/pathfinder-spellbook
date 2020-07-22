@@ -47,7 +47,12 @@ function formatFeatData(replyData){
                 replyData[key] = replyData[key].replace("**Prerequisite:", "**Prerequisite**:");
               }
           } else if (replyData[key].startsWith("**Benefit")){
-              replyData[key] = replyData[key].replace("**Benefit:", "**Benefit**:");
+            if (replyData[key].startsWith("**Benefit")) {
+                replyData[key] = replyData[key].replace("**Benefit(s):", "**Benefit(s)**:");
+              } else {
+                replyData[key] = replyData[key].replace("**Benefit:", "**Benefit**:");
+              }
+              
           } else if (replyData[key].startsWith("**Special")){
               replyData[key] = replyData[key].replace("**Special:", "**Special**:");
           } else if (replyData[key].startsWith("**Normal")){

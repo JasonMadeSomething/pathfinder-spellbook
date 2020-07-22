@@ -1,6 +1,5 @@
 // Run dotenv
 require('dotenv').config();
-
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const axios = require("axios");
@@ -11,18 +10,31 @@ client.login(process.env.DISCORD_TOKEN);
 
 client.on('message', msg => {
   
-  //need to validate the url
   const siteUrl = msg.content;
+  var message = msg.content;
   if (siteUrl.startsWith("https://www.d20pfsrd.com/feats/")){
-    axios.get(siteUrl).then((response) => { const replyData = parseFeatPage(response.data);
-    const formattedData = formatFeatData(replyData);
-    const message = formatMessage(formattedData);
-    msg.channel.send(message);
-    })
-    .catch((error) => {
+    axios.get(siteUrl).then( (response) => {
+      message = featResponse(response);
+      sendMessage(message);
+    } 
+    ).catch((error) => {
       console.log(error);
     });
+  } else if ("https://www.d20pfsrd.com/magic/"){
+    //Write the axios call where parsing the paizo pages is a NAMED callback function.
   }
+
+function sendMessage(message){
+    msg.channel.send(message);
+}
+
+});
+
+function featResponse(response){ 
+    const replyData = parseFeatPage(response.data);
+    const formattedData = formatFeatData(replyData);
+    return formatMessage(formattedData);
+}  
 
 
 function parseFeatPage(data){
@@ -37,6 +49,26 @@ function parseFeatPage(data){
   return reply;
 }
 
+function formatMessage(formattedData){
+  var message = formattedData["Name"] + "\n";
+  for (var key in formattedData){
+    if (key != "Name"){
+      message = message + formattedData[key] + "\n";
+    }
+  }
+  return message;
+}
+
+function parseMagicPage(data){
+  const $ = cheerio.load(data);
+  const pagetitle = $('article  > h1').text();
+  const details= $('article  > div .article-content').children('p');
+  const reply = {"Name": pagetitle};
+  details.each(function(i){
+    
+  });
+  return reply;
+}
 
 function formatFeatData(replyData){
   for (var key in replyData){
@@ -54,7 +86,12 @@ function formatFeatData(replyData){
                 replyData[key] = replyData[key].replace("**Prerequisite:", "**Prerequisite**:");
               }
           } else if (replyData[key].startsWith("**Benefit")){
-              replyData[key] = replyData[key].replace("**Benefit:", "**Benefit**:");
+            if (replyData[key].startsWith("**Benefit")) {
+                replyData[key] = replyData[key].replace("**Benefit(s):", "**Benefit(s)**:");
+              } else {
+                replyData[key] = replyData[key].replace("**Benefit:", "**Benefit**:");
+              }
+              
           } else if (replyData[key].startsWith("**Special")){
               replyData[key] = replyData[key].replace("**Special:", "**Special**:");
           } else if (replyData[key].startsWith("**Normal")){
@@ -70,17 +107,3 @@ function formatFeatData(replyData){
     
     return replyData;
 }
-
-
-function formatMessage(formattedData){
-  var message = formattedData["Name"] + "\n";
-  for (var key in formattedData){
-    if (key != "Name"){
-      message = message + formattedData[key] + "\n";
-    }
-  }
-  return message;
-}
-
-});
-
