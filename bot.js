@@ -22,6 +22,10 @@ client.on('message', msg => {
     });
   } else if ("https://www.d20pfsrd.com/magic/"){
     //Write the axios call where parsing the paizo pages is a NAMED callback function.
+    axios.get(siteUrl).then((response)=> {
+      message = parseMagicPage(response)
+      console.log(message);
+    })
   }
 
 function sendMessage(message){
@@ -61,10 +65,16 @@ function formatMessage(formattedData){
 
 function parseMagicPage(data){
   const $ = cheerio.load(data);
-  const pagetitle = $('article  > h1').text();
-  const details= $('article  > div .article-content').children('p');
+  const pagetitle = $('article .magic  > h1').text();
+  const details= $('article .magic > div .article-content').children('p');
   const reply = {"Name": pagetitle};
+  var x = "Info";
   details.each(function(i){
+    if ($(this).hasClass("divider")) {
+      x = $(this).text()
+    }else{
+      reply[x] = $(this).text();
+    }
     
   });
   return reply;
