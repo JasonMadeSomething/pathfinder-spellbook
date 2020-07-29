@@ -1,38 +1,48 @@
 // Run dotenv
 require('dotenv').config();
 const Discord = require('discord.js');
-const client = new Discord.Client();
 const axios = require("axios");
 const cheerio = require('cheerio');
 
+
+const client = new Discord.Client();
 //initialize bot by connecting to the server
 client.login(process.env.DISCORD_TOKEN);
 
+//Bot event listener for a message
 client.on('message', msg => {
   
-  const siteUrl = msg.content;
-  var message = msg.content;
+  const siteUrl = encodeURI(msg.content);
+  
   if (siteUrl.startsWith("https://www.d20pfsrd.com/feats/")){
-    axios.get(siteUrl).then( (response) => {
-      message = featResponse(response);
-      sendMessage(message);
-    } 
-    ).catch((error) => {
-      console.log(error);
-    });
-  } else if ("https://www.d20pfsrd.com/magic/"){
-    //Write the axios call where parsing the paizo pages is a NAMED callback function.
-    axios.get(siteUrl).then((response)=> {
-      message = parseMagicPage(response)
-      console.log(message);
-    })
+    getPage(msg, siteUrl, featResponse);
+
+  } else if (siteUrl.startsWith("https://www.d20pfsrd.com/magic/")){
+    getPage(msg, siteUrl, magicResponse)
   }
 
-function sendMessage(message){
-    msg.channel.send(message);
+});
+
+async function getPage(msg, url, parser){
+  let message = "placeholder";
+  await axios.get(url).then( (response) => {
+      message = parser(response);
+    } 
+    ).catch((error) => {
+      console.error(error.message);
+    });
+  sendMessage(message, msg);
+  
 }
 
-});
+function sendMessage(message, msg){
+    try {
+      msg.channel.send(message);
+    } catch (e) {
+      console.error(e);
+    }
+      
+}
 
 function featResponse(response){ 
     const replyData = parseFeatPage(response.data);
@@ -40,6 +50,11 @@ function featResponse(response){
     return formatMessage(formattedData);
 }  
 
+function magicResponse(response){
+   const replyData = parseMagicPage(response.data);
+   
+   console.log(replyData);
+}
 
 function parseFeatPage(data){
 
@@ -66,12 +81,12 @@ function formatMessage(formattedData){
 function parseMagicPage(data){
   const $ = cheerio.load(data);
   const pagetitle = $('article .magic  > h1').text();
-  const details= $('article .magic > div .article-content').children('p');
+  const details= $('article .magic > div .page-center > div .article-content').children('p');
   const reply = {"Name": pagetitle};
   var x = "Info";
   details.each(function(i){
     if ($(this).hasClass("divider")) {
-      x = $(this).text()
+      x = $(this).text();
     }else{
       reply[x] = $(this).text();
     }
@@ -83,37 +98,42 @@ function parseMagicPage(data){
 function formatFeatData(replyData){
   for (var key in replyData){
       if(replyData.hasOwnProperty(key)) {
-        if (replyData[key].startsWith("Prerequisite")
-        || replyData[key].startsWith("Benefit")
-        || replyData[key].startsWith("Special")
-        || replyData[key].startsWith("Normal")
-        ){
-          replyData[key] = "**" + replyData[key];
-          if (replyData[key].startsWith("**Prerequisite")){
-              if (replyData[key].startsWith("**Prerequisite(s):")) {
-                replyData[key] = replyData[key].replace("**Prerequisite(s):", "**Prerequisite(s)**:");
-              } else {
-                replyData[key] = replyData[key].replace("**Prerequisite:", "**Prerequisite**:");
-              }
-          } else if (replyData[key].startsWith("**Benefit")){
-            if (replyData[key].startsWith("**Benefit")) {
-                replyData[key] = replyData[key].replace("**Benefit(s):", "**Benefit(s)**:");
-              } else {
-                replyData[key] = replyData[key].replace("**Benefit:", "**Benefit**:");
-              }
-              
-          } else if (replyData[key].startsWith("**Special")){
-              replyData[key] = replyData[key].replace("**Special:", "**Special**:");
-          } else if (replyData[key].startsWith("**Normal")){
-              replyData[key] = replyData[key].replace("**Normal:", "**Normal**:");
-          }
-        } else if (key == "Name") {
+        if (key == "Name") {
           replyData[key] = "**" + replyData[key] + "**";
         } else {
-          replyData[key] = "_" + replyData[key] + "_";
+          replyData[key] = titleType(replyData[key]);
         }
       }
     }
-    
     return replyData;
 }
+
+function titleType(title){
+  if (title.startsWith("Prerequisite(s):")){
+    return title.replace("Prerequisite(s):", "**Prerequisite(s):**");
+  }else if(title.startsWith("Prerequisite:")){
+    return title.replace("Prerequisite(s):", "**Prerequisite:**");
+  }else if(title.startsWith("Prerequisites:")){
+    return title.replace("Prerequisites:", "**Prerequisites:**");
+  }  else if (title.startsWith("Benefit(s):")){
+    return title.replace("Benefit(s):", "**Benefit(s):**");
+  }else if (title.startsWith("Benefit:")){
+    return title.replace("Benefit:", "**Benefit:**");
+  }else if (title.startsWith("Benefits:")){
+    return title.replace("Benefits:", "**Benefits:**");
+  }else if (title.startsWith("Normal")){
+    return title.replace("Normal:", "**Normal:**");
+  }else if (title.startsWith("Special")){
+    return title.replace("Special:", "**Special:**");
+  } else {
+    return "_" + title + "_";
+  }
+}
+
+module.exports = {
+  formatFeatData: formatFeatData,
+  parseMagicPage: parseMagicPage,
+  formatMessage: formatMessage,
+  parseFeatPage: parseFeatPage,
+  featResponse: featResponse,
+};
