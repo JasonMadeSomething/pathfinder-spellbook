@@ -18,7 +18,7 @@ client.on('message', msg => {
     getPage(msg, siteUrl, featResponse);
 
   } else if (siteUrl.startsWith("https://www.d20pfsrd.com/magic/")){
-    getPage(msg, siteUrl, magicResponse)
+    getPage(msg, siteUrl, magicResponse);
   }
 
 });
@@ -37,7 +37,12 @@ async function getPage(msg, url, parser){
 
 function sendMessage(message, msg){
     try {
-      msg.channel.send(message);
+      if (message === "" || typeof message === undefined){
+        throw "Can't Send an empty message";
+      }else {
+        msg.channel.send(message);
+      }
+      
     } catch (e) {
       console.error(e);
     }
@@ -59,7 +64,7 @@ function magicResponse(response){
 function parseFeatPage(data){
 
   const $ = cheerio.load(data);
-  const pagetitle = $('article  > h1').text();
+  const pagetitle = $('article > h1').text();
   const details= $('article  > div .article-content').children('p');
   const reply = {"Name": pagetitle};
   details.each(function(i){
@@ -80,8 +85,8 @@ function formatMessage(formattedData){
 
 function parseMagicPage(data){
   const $ = cheerio.load(data);
-  const pagetitle = $('article .magic  > h1').text();
-  const details= $('article .magic > div .page-center > div .article-content').children('p');
+  const pagetitle = $('article  > h1').text();
+  const details= $('article > div.row.display-flex > div.article-text > div.page-center > div').children('p');
   const reply = {"Name": pagetitle};
   var x = "Info";
   details.each(function(i){
@@ -129,11 +134,3 @@ function titleType(title){
     return "_" + title + "_";
   }
 }
-
-module.exports = {
-  formatFeatData: formatFeatData,
-  parseMagicPage: parseMagicPage,
-  formatMessage: formatMessage,
-  parseFeatPage: parseFeatPage,
-  featResponse: featResponse,
-};
