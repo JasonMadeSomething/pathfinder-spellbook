@@ -22,7 +22,7 @@ function formatFeatData(replyData){
   for (var key in replyData){
       if(replyData.hasOwnProperty(key)) {
         if (key == "Name") {
-          replyData[key] = "**" + replyData[key] + "**";
+          replyData[key] = "__**" + replyData[key] + "**__";
         } else {
           replyData[key] = titleType(replyData[key]);
         }

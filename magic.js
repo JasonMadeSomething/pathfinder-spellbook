@@ -10,24 +10,26 @@ function magicResponse(response){
 function formatMagicData(replyData){
   for (var key in replyData){
       if(replyData.hasOwnProperty(key)) {
+        /*No newlines is the comprimise between pages that have them embedded and those that don't*/
         if (key == "Name") {
           replyData[key] = "__**" + replyData[key] + "**__";
         } else if(key == "Info"){
-            replyData[key] = replyData[key].replace("Elemental School","\n**Elemental School:**");
+            replyData[key] = replyData[key].replace("Elemental School","**Elemental School:**");
             replyData[key] = replyData[key].replace("School","**School:**");
-            replyData[key] = replyData[key].replace("Level","\n**Level:**");
-            replyData[key] = replyData[key].replace("Domain","\n**Domain:**");
+            replyData[key] = replyData[key].replace("Level","**Level:**");
+            replyData[key] = replyData[key].replace("Domain","**Domain:**");
         } else if(key == "CASTING"){
             replyData[key] = "**CASTING**\n" + replyData[key];
             replyData[key] = replyData[key].replace("Casting Time","**Casting Time:**");
-            replyData[key] = replyData[key].replace("Components","\n**Components:**");
+            replyData[key] = replyData[key].replace("Components","**Components:**");
         } else if (key == "EFFECT" ){
             replyData[key] = "**EFFECT**\n" + replyData[key];
             replyData[key] = replyData[key].replace("Range","**Range:**");
-            replyData[key] = replyData[key].replace("Effect","\n**Effect:**");
-            replyData[key] = replyData[key].replace("Duration","\n**Duration:**");
-            replyData[key] = replyData[key].replace("Saving Throw","\n**Saving Throw:**");
-            replyData[key] = replyData[key].replace("Spell Resistance","\n**Spell Resistance:**");
+            replyData[key] = replyData[key].replace("Effect","**Effect:**");
+            replyData[key] = replyData[key].replace("Target","**Target:**");
+            replyData[key] = replyData[key].replace("Duration","**Duration:**");
+            replyData[key] = replyData[key].replace("Saving Throw","**Saving Throw:**");
+            replyData[key] = replyData[key].replace("Spell Resistance","**Spell Resistance:**");
         } else if (key == "DESCRIPTION"){
             replyData[key] = "**DESCRIPTION**\n" + replyData[key];
         } else {
