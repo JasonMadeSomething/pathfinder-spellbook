@@ -1,6 +1,5 @@
 const cheerio = require('cheerio');
 
-
 function featResponse(response){ 
     const replyData = parseFeatPage(response.data);
     const formattedData = formatFeatData(replyData);
@@ -49,7 +48,7 @@ function titleType(title){
     return title.replace("Prerequisite(s):", "**Prerequisite:**");
   }else if(title.startsWith("Prerequisites:")){
     return title.replace("Prerequisites:", "**Prerequisites:**");
-  }  else if (title.startsWith("Benefit(s):")){
+  }else if (title.startsWith("Benefit(s):")){
     return title.replace("Benefit(s):", "**Benefit(s):**");
   }else if (title.startsWith("Benefit:")){
     return title.replace("Benefit:", "**Benefit:**");
@@ -59,7 +58,7 @@ function titleType(title){
     return title.replace("Normal:", "**Normal:**");
   }else if (title.startsWith("Special")){
     return title.replace("Special:", "**Special:**");
-  } else {
+  }else {
     return "_" + title + "_";
   }
 }
@@ -67,4 +66,4 @@ function titleType(title){
 module.exports = {
   featResponse: featResponse
   
-}
+};
