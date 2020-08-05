@@ -12,15 +12,17 @@ client.login(process.env.DISCORD_TOKEN);
 client.on('message', msg => {
   
   /*Need to validate the incoming message*/
+  if(validateUrl(msg)){
+    const siteUrl = encodeURI(msg.content);
+    
+    if (siteUrl.startsWith("https://www.d20pfsrd.com/feats/")){
+      getPage(msg, siteUrl, feats.featResponse);
   
-  const siteUrl = encodeURI(msg.content);
-  
-  if (siteUrl.startsWith("https://www.d20pfsrd.com/feats/")){
-    getPage(msg, siteUrl, feats.featResponse);
-
-  } else if (siteUrl.startsWith("https://www.d20pfsrd.com/magic/")){
-    getPage(msg, siteUrl, magic.magicResponse);
+    } else if (siteUrl.startsWith("https://www.d20pfsrd.com/magic/")){
+      getPage(msg, siteUrl, magic.magicResponse);
+    }
   }
+  
 
 });
 
@@ -33,6 +35,15 @@ async function getPage(msg, url, parser){
       console.error(error.message);
     });
   sendMessage(message, msg);
+  
+}
+
+function validateUrl(incomingMessage){
+  if (incomingMessage.startsWith("https://www.d20pfsrd.com/magic/") || incomingMessage.startsWith("https://www.d20pfsrd.com/feats/")  && !(incomingMessage.endsWith("feats/") && incomingMessage.endsWith("magic/"))){
+    return true;
+  } else{
+    return false;
+  }
   
 }
 
