@@ -71,5 +71,7 @@ function formatMessage(formattedData){
 }
 
 module.exports = {
-  magicResponse: magicResponse
+  magicConfig: [parseMagicPage,
+                formatMagicData,
+                formatMessage]
 };

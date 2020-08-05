@@ -12,24 +12,32 @@ client.login(process.env.DISCORD_TOKEN);
 client.on('message', msg => {
   
   /*Need to validate the incoming message*/
-  if(validateUrl(msg)){
+  if(validateUrl(msg.content)){
     const siteUrl = encodeURI(msg.content);
-    
-    if (siteUrl.startsWith("https://www.d20pfsrd.com/feats/")){
-      getPage(msg, siteUrl, feats.featResponse);
-  
-    } else if (siteUrl.startsWith("https://www.d20pfsrd.com/magic/")){
-      getPage(msg, siteUrl, magic.magicResponse);
-    }
+    getPage(msg, siteUrl);
   }
   
 
 });
 
-async function getPage(msg, url, parser){
+function selectResponder(siteUrl){
+  if (siteUrl.startsWith("https://www.d20pfsrd.com/feats/")){
+      return feats.featsConfig;
+    } else if (siteUrl.startsWith("https://www.d20pfsrd.com/magic/")){
+      return magic.magicConfig
+  }
+}
+
+function responder(parser, formatter, messageFormatter, response){
+    const replyData = parser(response.data);
+    const formattedData = formatter(replyData);
+    return messageFormatter(formattedData);
+}
+
+async function getPage(msg, url){
   let message = "placeholder";
   await axios.get(url).then( (response) => {
-      message = parser(response);
+      message = responder(...selectResponder(url), response);
     } 
     ).catch((error) => {
       console.error(error.message);

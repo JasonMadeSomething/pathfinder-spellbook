@@ -64,6 +64,9 @@ function titleType(title){
 }
 
 module.exports = {
-  featResponse: featResponse
-  
+  featsConfig: [
+        parseFeatPage,
+        formatFeatData,
+        formatFeatMessage
+      ]
 };
