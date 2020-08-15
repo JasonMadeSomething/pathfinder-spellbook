@@ -53,6 +53,7 @@ function validateUrl(incomingMessage){
   }
 }
 
+
 function sendMessage(message, msg){
     try {
       if (message === "" || typeof message === undefined){
