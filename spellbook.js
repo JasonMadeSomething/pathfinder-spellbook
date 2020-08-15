@@ -10,13 +10,13 @@ client.login(process.env.DISCORD_TOKEN);
 
 //Bot event listener for a message
 client.on('message', msg => {
-  
+
   /*Need to validate the incoming message*/
   if(validateUrl(msg.content)){
     const siteUrl = encodeURI(msg.content);
     getPage(msg, siteUrl);
   }
-  
+
 
 });
 
@@ -38,12 +38,12 @@ async function getPage(msg, url){
   let message = "placeholder";
   await axios.get(url).then( (response) => {
       message = responder(...selectResponder(url), response);
-    } 
+    }
     ).catch((error) => {
       console.error(error.message);
     });
   sendMessage(message, msg);
-  
+
 }
 
 function validateUrl(incomingMessage){
@@ -61,9 +61,8 @@ function sendMessage(message, msg){
       }else {
         msg.channel.send(message);
       }
-      
     } catch (e) {
       console.error(e);
     }
-      
+
 }
