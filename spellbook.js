@@ -16,8 +16,6 @@ client.on('message', msg => {
     const siteUrl = encodeURI(msg.content);
     getPage(msg, siteUrl);
   }
-
-
 });
 
 function selectResponder(siteUrl){
