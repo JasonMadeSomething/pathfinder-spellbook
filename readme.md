@@ -14,5 +14,6 @@ Creatures immune to critical hits and sneak attacks are immune to this extra dam
 **Special**: Starting at 2nd level, a ranger with the archery combat style may select Focused Shot as a combat style feat.
 
 EX:
+https://www.d20pfsrd.com/magic/all-spells/i/illusory-crowd/
 
 TODO: add magic example
