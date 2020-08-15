@@ -64,5 +64,4 @@ function sendMessage(message, msg){
     } catch (e) {
       console.error(e);
     }
-
 }
