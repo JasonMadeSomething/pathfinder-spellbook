@@ -24,7 +24,7 @@ function selectResponder(siteUrl){
   if (siteUrl.startsWith("https://www.d20pfsrd.com/feats/")){
       return feats.featsConfig;
     } else if (siteUrl.startsWith("https://www.d20pfsrd.com/magic/")){
-      return magic.magicConfig
+      return magic.magicConfig;
   }
 }
 
@@ -52,7 +52,6 @@ function validateUrl(incomingMessage){
   } else{
     return false;
   }
-  
 }
 
 function sendMessage(message, msg){
