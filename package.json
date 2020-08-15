@@ -1,8 +1,8 @@
 {
-  "name": "diaras-spellbook",
+  "name": "spellbook",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Parses URLS from the d20pfsrd website and returns them to discord chat as formatted text",
+  "main": "spellbook.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
