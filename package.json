@@ -4,7 +4,8 @@
   "description": "Parses URLS from the d20pfsrd website and returns them to discord chat as formatted text",
   "main": "spellbook.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node spellbook.js"
   },
   "keywords": [],
   "author": "",
