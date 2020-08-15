@@ -43,7 +43,6 @@ async function getPage(msg, url){
       console.error(error.message);
     });
   sendMessage(message, msg);
-
 }
 
 function validateUrl(incomingMessage){
