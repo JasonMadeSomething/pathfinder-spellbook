@@ -1,9 +1,8 @@
-The goal of this bot is to parse URLs from the pathfinder d20pfsrd and return them to discord chat as readable text. Am willing to consider adding AoN support later
+The goal of this bot is to parse URLs from the pathfinder d20pfsrd and return them to discord chat as readable text.
 
-The initial focus will be on feats:
 
 EX:
-https://www.d20pfsrd.com/feats/combat-feats/focused-shot-combat 
+https://www.d20pfsrd.com/feats/combat-feats/focused-shot-combat
 
 should cause the bot to relpy with something roughly like this
 
@@ -13,3 +12,7 @@ should cause the bot to relpy with something roughly like this
 Creatures immune to critical hits and sneak attacks are immune to this extra damage.
 
 **Special**: Starting at 2nd level, a ranger with the archery combat style may select Focused Shot as a combat style feat.
+
+EX:
+
+TODO: add magic example
